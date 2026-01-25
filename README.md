@@ -1,7 +1,7 @@
 # 💜 SillyFix v2.4 💜
 ### The Official Successor to the SillyTool
 
-Welcome to the public release of **SillyFix**! This is a powerful, lightweight batch-based utility kit designed for the **Imp Games** community. 
+Welcome to the public release of **SillyFix**! This is a powerful, lightweight batch-based utility kit  
 
 ---
 
@@ -12,6 +12,7 @@ Welcome to the public release of **SillyFix**! This is a powerful, lightweight b
 * **SillyWeb:** One-click access to the official Imp Games site.
 * **SillySpecs:** View your CPU and RAM details in a clean report.
 * **SillyWatch & SillySpam:** Productivity and fun utilities.
+* **SillyNews:** Tells you when your version is outdated and the news for SillyFix.
 
 ---
 
