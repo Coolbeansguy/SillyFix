@@ -1,1 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SillyFix | Official Download</title>
+    <style>
+        /* Matching the "Freedom" site style with Purple/Black */
+        body {
+            background-color: #05000a;
+            background-image: radial-gradient(circle at center, #1a0033 0%, #05000a 100%);
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
 
+        .header {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            letter-spacing: 5px;
+            margin: 0;
+            background: linear-gradient(to bottom, #ffffff, #bc13fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .main-container {
+            display: flex;
+            gap: 40px;
+            max-width: 1000px;
+            width: 90%;
+        }
+
+        /* Left side: Download */
+        .download-box {
+            flex: 1;
+            background: rgba(20, 0, 40, 0.6);
+            border: 1px solid #bc13fe;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Right side: News */
+        .news-box {
+            flex: 1;
+            background: rgba(20, 0, 40, 0.4);
+            border: 1px solid #4a0082;
+            padding: 30px;
+            border-radius: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+            text-align: left;
+        }
+
+        .news-item {
+            border-bottom: 1px solid #330066;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+        }
+
+        .news-date {
+            color: #bc13fe;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .btn {
+            background: #bc13fe;
+            color: white;
+            padding: 15px 40px;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 5px;
+            display: inline-block;
+            transition: 0.3s;
+            box-shadow: 0 0 15px rgba(188, 19, 254, 0.4);
+        }
+
+        .btn:hover {
+            background: #d46aff;
+            box-shadow: 0 0 25px rgba(188, 19, 254, 0.8);
+            transform: translateY(-2px);
+        }
+
+        .footer {
+            margin-top: 50px;
+            color: #555;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>SILLYFIX</h1>
+        <p style="color: #888;">The Official Successor to SillyTool</p>
+    </div>
+
+    <div class="main-container">
+        <div class="download-box">
+            <h2>Public Release</h2>
+            <p>Experience the new era of Silly utilities.</p>
+            <br>
+            <a href="SillyFix.zip" class="btn">DOWNLOAD .ZIP</a>
+            <p style="font-size: 12px; color: #666; margin-top: 20px;">
+                Note: If flagged as a virus, click 'More Info' > 'Run Anyway'.
+            </p>
+        </div>
+
+        <div class="news-box">
+            <h3 style="color: #bc13fe; margin-top: 0;">Silly Updates</h3>
+            
+            <div class="news-item">
+                <span class="news-date">JANUARY 25, 2026</span>
+                <p>SillyFix v2.4 released! Officially replaced the old SillyTool with a new double-column layout and improved stability.</p>
+            </div>
+
+            <div class="news-item">
+                <span class="news-date">JANUARY 24, 2026</span>
+                <p>Imp Games site integration complete. Added SillyWeb launcher for easier access.</p>
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="footer">
+        Credits to swapNspit.
+    </div>
+
+</body>
+</html>
