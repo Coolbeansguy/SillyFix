@@ -13,6 +13,9 @@ Welcome to the public release of **SillyFix**! This is a powerful, lightweight b
 * **SillySpecs:** View your CPU and RAM details in a clean report.
 * **SillyWatch & SillySpam:** Productivity and fun utilities.
 * **SillyNews:** Tells you when your version is outdated and the news for SillyFix.
+* **Sillychat:** chat with others on the same network.
+* **SillyCamo:** Changes the color of SillyFix
+* **SillyPlugins:** Add ur own custom tools to SillyFix
 
 ---
 
