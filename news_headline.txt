@@ -1,1 +1,1 @@
-Added Sillynews and fixed SillySniffer
+v3.0 IS OUT! Added SillyPlugins - You can now load your own custom tools!
