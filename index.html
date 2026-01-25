@@ -4,29 +4,30 @@
     <meta charset="UTF-8">
     <title>SillyFix | Official Download</title>
     <style>
-        /* Matching the "Freedom" site style with Purple/Black */
         body {
             background-color: #05000a;
-            background-image: radial-gradient(circle at center, #1a0033 0%, #05000a 100%);
             color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             min-height: 100vh;
-            margin: 0;
-            overflow-x: hidden;
         }
 
-        .header {
-            margin-bottom: 40px;
-            text-align: center;
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
         }
 
+        .header { margin-top: 50px; text-align: center; }
         h1 {
-            font-size: 3.5rem;
-            letter-spacing: 5px;
+            font-size: 4rem;
             margin: 0;
             background: linear-gradient(to bottom, #ffffff, #bc13fe);
             -webkit-background-clip: text;
@@ -35,109 +36,83 @@
 
         .main-container {
             display: flex;
-            gap: 40px;
-            max-width: 1000px;
+            gap: 30px;
+            max-width: 1100px;
             width: 90%;
+            margin-top: 40px;
+            z-index: 1;
         }
 
-        /* Left side: Download */
-        .download-box {
-            flex: 1;
-            background: rgba(20, 0, 40, 0.6);
+        .box {
+            background: rgba(15, 0, 30, 0.7);
             border: 1px solid #bc13fe;
-            padding: 40px;
             border-radius: 15px;
-            text-align: center;
-            backdrop-filter: blur(10px);
-        }
-
-        /* Right side: News */
-        .news-box {
-            flex: 1;
-            background: rgba(20, 0, 40, 0.4);
-            border: 1px solid #4a0082;
             padding: 30px;
-            border-radius: 15px;
-            max-height: 400px;
-            overflow-y: auto;
-            text-align: left;
+            backdrop-filter: blur(5px);
         }
 
-        .news-item {
-            border-bottom: 1px solid #330066;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-        }
-
-        .news-date {
-            color: #bc13fe;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
+        .download-side { flex: 2; text-align: center; }
+        .news-side { flex: 1; border-color: #4a0082; }
 
         .btn {
             background: #bc13fe;
             color: white;
-            padding: 15px 40px;
+            padding: 18px 50px;
             text-decoration: none;
-            font-size: 1.2rem;
+            font-size: 1.5rem;
             font-weight: bold;
-            border-radius: 5px;
+            border-radius: 8px;
             display: inline-block;
             transition: 0.3s;
-            box-shadow: 0 0 15px rgba(188, 19, 254, 0.4);
+            box-shadow: 0 0 20px rgba(188, 19, 254, 0.5);
         }
 
-        .btn:hover {
-            background: #d46aff;
-            box-shadow: 0 0 25px rgba(188, 19, 254, 0.8);
-            transform: translateY(-2px);
-        }
+        .btn:hover { transform: scale(1.05); background: #d46aff; }
 
-        .footer {
-            margin-top: 50px;
-            color: #555;
-            font-size: 0.9rem;
-        }
+        .news-item { border-bottom: 1px solid #330066; padding: 10px 0; }
+        .news-date { color: #bc13fe; font-weight: bold; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
+    <div id="particles-js"></div>
+
     <div class="header">
         <h1>SILLYFIX</h1>
-        <p style="color: #888;">The Official Successor to SillyTool</p>
+        <p style="color: #888;">Successor to SillyTool</p>
     </div>
 
     <div class="main-container">
-        <div class="download-box">
+        <div class="box download-side">
             <h2>Public Release</h2>
-            <p>Experience the new era of Silly utilities.</p>
+            <p>The next generation of Silly utilities.</p>
             <br>
             <a href="SillyFix.zip" class="btn">DOWNLOAD .ZIP</a>
-            <p style="font-size: 12px; color: #666; margin-top: 20px;">
-                Note: If flagged as a virus, click 'More Info' > 'Run Anyway'.
-            </p>
+            <p style="font-size: 12px; color: #444; margin-top: 20px;">Follow GitHub for SillyUpdates</p>
         </div>
 
-        <div class="news-box">
-            <h3 style="color: #bc13fe; margin-top: 0;">Silly Updates</h3>
-            
+        <div class="box news-side">
+            <h3 style="color: #bc13fe; margin-top: 0;">Silly News</h3>
             <div class="news-item">
-                <span class="news-date">JANUARY 25, 2026</span>
-                <p>SillyFix v2.4 released! Officially replaced the old SillyTool with a new double-column layout and improved stability.</p>
+                <span class="news-date">JAN 25, 2026</span>
+                <p>SillyFix got released to the public which is the new SillyTool successor!</p>
             </div>
-
-            <div class="news-item">
-                <span class="news-date">JANUARY 24, 2026</span>
-                <p>Imp Games site integration complete. Added SillyWeb launcher for easier access.</p>
-            </div>
-            
         </div>
     </div>
 
-    <div class="footer">
-        Credits to swapNspit.
-    </div>
-
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 80 },
+                "color": { "value": "#bc13fe" },
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.5 },
+                "size": { "value": 3 },
+                "line_linked": { "enable": true, "distance": 150, "color": "#bc13fe", "opacity": 0.4, "width": 1 },
+                "move": { "enable": true, "speed": 2 }
+            }
+        });
+    </script>
 </body>
 </html>
