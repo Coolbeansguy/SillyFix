@@ -1,4 +1,4 @@
-# 💜 SillyFix v2.4 💜
+# 💜 SillyFix 💜
 ### The Official Successor to the SillyTool
 
 Welcome to the public release of **SillyFix**! This is a powerful, lightweight batch-based utility kit  
