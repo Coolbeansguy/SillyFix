@@ -71,6 +71,9 @@
 
         .news-item { border-bottom: 1px solid #330066; padding: 10px 0; }
         .news-date { color: #bc13fe; font-weight: bold; font-size: 0.8rem; }
+        
+        /* Smooth scrolling when clicking the news link */
+        html { scroll-behavior: smooth; }
     </style>
 </head>
 <body>
@@ -91,10 +94,16 @@
             <p style="font-size: 12px; color: #444; margin-top: 20px;">Follow GitHub for SillyUpdates</p>
         </div>
 
-        <div class="box news-side">
+        <div id="news" class="box news-side">
             <h3 style="color: #bc13fe; margin-top: 0;">Silly News</h3>
+            
             <div class="news-item">
                 <span class="news-date">JAN 25, 2026</span>
+                <p>SillyFix v2.8 released! Added cinematic loading, auto-updates, and SillyCheck.</p>
+            </div>
+
+            <div class="news-item">
+                <span class="news-date">JAN 24, 2026</span>
                 <p>SillyFix got released to the public which is the new SillyTool successor!</p>
             </div>
         </div>
