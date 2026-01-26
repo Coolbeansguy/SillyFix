@@ -3,3 +3,4 @@
 3|SillyToDo|todo.bat|swapNspit|Task Manager|https://raw.githubusercontent.com/Coolbeansguy/SillyFix/main/Plugins/todo.bat
 4|SillyCipher|cipher.bat|swapNspit|Secret Message Tool|https://raw.githubusercontent.com/Coolbeansguy/SillyFix/main/Plugins/cipher.bat
 5|SillyMatrix|matrix.bat|swapNspit|Falling Code Screen|https://raw.githubusercontent.com/Coolbeansguy/SillyFix/main/Plugins/matrix.bat
+6|SillyOS Theme|sillyos.bat|swapNspit|Changes UI to an Operating System|https://raw.githubusercontent.com/Coolbeansguy/SillyFix/main/Plugins/sillyos.bat
