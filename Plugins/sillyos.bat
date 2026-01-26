@@ -3,11 +3,15 @@ setlocal enabledelayedexpansion
 color 17
 title SillyOS Desktop
 
-:: --- PATH CALCULATION (The Bulletproof Fix) ---
+:: --- PATH CALCULATION ---
+:: Resolves the path to the folder two levels up from this script
 set "SCRIPT_DIR=%~dp0"
-:: This resolves the "..\..\" into a real folder path
-for %%i in ("%SCRIPT_DIR%..\..") do set "ROOT_DIR=%%~f i\"
+for %%i in ("%SCRIPT_DIR%..\..") do set "ROOT_DIR=%%~fi\"
 set "USER_FILE=%ROOT_DIR%Files\user.dat"
+
+:: --- SAFETY CHECK ---
+:: Create the Files folder if it doesn't exist so the script doesn't crash
+if not exist "%ROOT_DIR%Files" mkdir "%ROOT_DIR%Files"
 
 :boot
 cls
@@ -22,7 +26,6 @@ if exist "%USER_FILE%" (
     set /p username=<"%USER_FILE%"
     goto desktop
 )
-if not exist "%ROOT_DIR%Files" mkdir "%ROOT_DIR%Files"
 
 :setup
 cls
@@ -32,13 +35,10 @@ echo  Please create a user account.
 echo.
 set /p "new_user=Username > "
 
-:: Prevent empty username
 if "%new_user%"=="" set "new_user=Admin"
-
-:: Set variable in memory
 set "username=%new_user%"
 
-:: Save using the calculated path
+:: Save the username
 (echo %new_user%)>"%USER_FILE%"
 goto desktop
 
@@ -49,20 +49,27 @@ title SillyOS Desktop - User: %username%
 
 echo.
 echo   _________________________________________________________
-echo  |  SILLY OS v1.3                        User: %username%  |
-echo  |_________________________________________________________|
+echo  ^|  SILLY OS v1.3                User: %username%  ^|
+echo  ^|_________________________________________________________^|
 echo.
-echo      .---.          .---.          .---.          .---.
-echo     | [_] |        |  $  |        |  ?  |        |  X  |
-echo     '-----'        '-----'        '-----'        '-----'
-echo    [1] Apps       [2] Store      [3] Info       [4] Log Out
+echo       .---.          .---.          .---.          .---.
+echo      ^| [_] ^|        ^|  $  ^|        ^|  ?  ^|        ^|  X  ^|
+echo      '-----'        '-----'        '-----'        '-----'
+echo     [1] Apps        [2] Store      [3] Info       [4] Log Out
 echo.
 echo   _________________________________________________________
 echo.
 set /p "os_choice=Command > "
 
 if "%os_choice%"=="1" goto apps
-if "%os_choice%"=="2" call "%ROOT_DIR%Files\Plugins\store.bat" & goto desktop
+if "%os_choice%"=="2" (
+    if exist "%ROOT_DIR%Files\Plugins\store.bat" (
+        call "%ROOT_DIR%Files\Plugins\store.bat"
+    ) else (
+        echo Store not found! & pause
+    )
+    goto desktop
+)
 if "%os_choice%"=="3" goto info
 if "%os_choice%"=="4" goto logout
 goto desktop
@@ -77,7 +84,6 @@ echo  3. Back
 echo.
 set /p "app=Select > "
 if "%app%"=="3" goto desktop
-:: Note: We use ROOT_DIR to find tools safely
 if "%app%"=="1" start "" "%ROOT_DIR%Files\auto.EXE" & goto apps
 if "%app%"=="2" call "%ROOT_DIR%Files\Plugins\matrix.bat" & goto apps
 goto apps
