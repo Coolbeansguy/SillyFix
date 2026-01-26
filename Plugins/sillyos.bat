@@ -1,34 +1,42 @@
 @echo off
+cd /d "%~dp0"
 title SillyOS Desktop
-color 0B
-cls
+setlocal enabledelayedexpansion
 
-:: --- FAKE BOOT ANIMATION ---
-echo.
-echo  [ SYSTEM ] Loading Graphics Engine...
-timeout /t 1 >nul
-cls
+:: --- LOGGING FUNCTION ---
+set "logfile=Files\system.log"
+if not exist "Files" mkdir "Files" 2>nul
+echo [%DATE% %TIME%] SillyOS Booted >> "%logfile%"
 
-:: --- MAIN MENU ---
+:: --- LOAD SAVED COLOR ---
+if exist "Files\os_color.dat" (
+    set /p current_color=<"Files\os_color.dat"
+    color !current_color!
+) else (
+    color 0B
+)
+
 :desktop
 cls
 echo.
 echo  =============================================================
-echo  ^|  SILLY OS v2.1 [ULTIMATE]                 User: Admin    ^|
+echo  ^|  SILLY OS v2.2 [ULTIMATE]                User: Admin    ^|
 echo  =============================================================
 echo.
-echo        .-----------.           .-----------.
-echo        ^|   APPS    ^|           ^| SILLYFIX  ^|
-echo        ^|   [#]     ^|           ^|   STORE   ^|
-echo        '-----------'           '-----------'
-echo             (1)                     (2)
+echo        .-----------.            .-----------.
+echo        ^|   APPS    ^|            ^| SILLYFIX  ^|
+echo        ^|   [#]     ^|            ^|   STORE   ^|
+echo        '-----------'            '-----------'
+echo             (1)                      (2)
 echo.
-echo        .-----------.           .-----------.
-echo        ^|   INFO    ^|           ^|  LOGOUT   ^|
-echo        ^|   (i)     ^|           ^|   ^<--     ^|
-echo        '-----------'           '-----------'
-echo             (3)                     (4)
+echo        .-----------.            .-----------.
+echo        ^| SETTINGS  ^|            ^|  LOGOUT   ^|
+echo        ^|   (s)     ^|            ^|   <--     ^|
+echo        '-----------'            '-----------'
+echo             (3)                      (4)
 echo.
+echo  =============================================================
+echo  DATE: %DATE% ^| TIME: %TIME:~0,5% ^| STATUS: ONLINE
 echo  =============================================================
 echo.
 
@@ -37,69 +45,57 @@ set /p "os_choice=Selection > "
 
 if "%os_choice%"=="1" goto apps
 if "%os_choice%"=="2" goto launch_store
-if "%os_choice%"=="3" goto info
+if "%os_choice%"=="3" goto settings
+if "%os_choice%"=="s" goto settings
 if "%os_choice%"=="4" goto logout
 goto desktop
 
-:apps
+:settings
 cls
 echo.
 echo  =============================================================
-echo  ^|  ALL PROGRAMS                                           ^|
+echo  ^|  PERSONALIZATION SETTINGS                              ^|
 echo  =============================================================
 echo.
-echo    [1] AutoClicker       [2] SillySniffer    [3] SillySpam
-echo    [4] SillyWeb          [5] SillySpecs      [6] SillyCheck
-echo    [7] SillyClean        [8] SillyNuke       [9] SillyMusic
-echo    [10] SillyChat        [11] SillyWatch     [12] SillyVault
-echo    [13] Matrix Rain      [14] Back
+echo    [1] Matrix Green    [2] Deep Blue     [3] Blood Red
+echo    [4] Classic Cyan    [5] Purple Rain   [6] Gold Edition
+echo    [7] VIEW SYSTEM LOG [8] BACK TO DESKTOP
 echo.
+set /p "col_choice=Select Option > "
+
+if "%col_choice%"=="1" set "new_col=0A" & set "theme_n=Matrix"
+if "%col_choice%"=="2" set "new_col=09" & set "theme_n=DeepBlue"
+if "%col_choice%"=="3" set "new_col=0C" & set "theme_n=BloodRed"
+if "%col_choice%"=="4" set "new_col=0B" & set "theme_n=Classic"
+if "%col_choice%"=="5" set "new_col=05" & set "theme_n=Purple"
+if "%col_choice%"=="6" set "new_col=0E" & set "theme_n=Gold"
+if "%col_choice%"=="7" start notepad.exe "%logfile%" & goto settings
+if "%col_choice%"=="8" goto desktop
+
+color %new_col%
+echo %new_col% > "Files\os_color.dat"
+echo [%DATE% %TIME%] Theme changed to %theme_n% >> "%logfile%"
+goto settings
+
+:apps
+cls
 echo  =============================================================
+echo  ^|  DYNAMIC PROGRAM LIST                                  ^|
+echo  =============================================================
+dir /b *.bat
 echo.
-set "app="
 set /p "app=Open Program > "
-
-if "%app%"=="14" goto desktop
-
-:: --- APP LAUNCHER ---
-:: These assume the files exist in the main Files folder
-
-if "%app%"=="1" start "" "Files\auto.EXE" & goto apps
-if "%app%"=="2" start "" "Files\wifi.bat" & goto apps
-if "%app%"=="3" start "" "Files\spam.bat" & goto apps
-if "%app%"=="4" start "" "Files\web.bat" & goto apps
-if "%app%"=="5" start "" "Files\specs.bat" & goto apps
-if "%app%"=="6" start "" "Files\check.bat" & goto apps
-if "%app%"=="7" start "" "Files\clean.bat" & goto apps
-if "%app%"=="8" start "" "Files\nuke.bat" & goto apps
-if "%app%"=="9" start "" "Files\music.bat" & goto apps
-if "%app%"=="10" start "" "Files\chat.bat" & goto apps
-if "%app%"=="11" start "" "Files\watch.bat" & goto apps
-if "%app%"=="12" start "" "Files\locker.bat" & goto apps
-if "%app%"=="13" call "Files\Plugins\matrix.bat" & goto apps
-
-:: Fallback
-echo [!] App not found.
-timeout /t 1 >nul
+if /i "%app%"=="back" goto desktop
+if exist ".\%app%" (
+    echo [%DATE% %TIME%] Launched App: %app% >> "%logfile%"
+    start "" ".\%app%"
+    goto apps
+)
 goto apps
 
 :launch_store
-call "Files\Plugins\store.bat"
-goto desktop
-
-:info
-cls
-echo.
-echo  =============================================================
-echo  ^|  SYSTEM INFORMATION                                     ^|
-echo  =============================================================
-echo.
-echo    OS Version:   SillyOS v2.1 Ultimate
-echo    User:         Admin
-echo    Installed:    13 Apps
-echo.
-echo  =============================================================
-pause
+echo [%DATE% %TIME%] Entered Store >> "%logfile%"
+if exist "store.bat" call "store.bat"
 goto desktop
 
 :logout
@@ -107,6 +103,13 @@ cls
 color 0c
 echo.
 echo  [!] SYSTEM SHUTDOWN
-echo      Logging out...
+echo    Returning to SillyFix...
+echo [%DATE% %TIME%] User Logged Out >> "%logfile%"
 timeout /t 2 >nul
-exit /b
+:: --- THE CHANGE BACK FIX ---
+:: This moves back two folders and runs the main SillyFix.bat
+cd ..\..
+if exist "SillyFix.bat" (
+    start "" "SillyFix.bat"
+)
+exit
