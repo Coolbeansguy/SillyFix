@@ -1,31 +1,39 @@
 @echo off
 title SillyOS Desktop
-color 17
+color 0B
 cls
 
-echo [DEBUG] Loading SillyOS...
+:: --- FAKE BOOT ANIMATION ---
+echo.
+echo  [ SYSTEM ] Loading Graphics Engine...
 timeout /t 1 >nul
+cls
 
 :: --- MAIN MENU ---
 :desktop
 cls
 echo.
-echo   _________________________________________________________
-:: FIX: We added ^ before the pipes (|)
-echo  ^|  SILLY OS v1.9                        User: Admin     ^|
-echo  ^|_________________________________________________________^|
+echo  =============================================================
+echo  ^|  SILLY OS v2.0 [PRO]                      User: Admin    ^|
+echo  =============================================================
 echo.
-echo      .---.          .---.          .---.          .---.
-echo     ^| [_] ^|        ^|  $  ^|        ^|  ?  ^|        ^|  X  ^|
-echo     '-----'        '-----'        '-----'        '-----'
-echo    [1] Apps       [2] Store      [3] Info       [4] Log Out
+echo        .-----------.           .-----------.
+echo        ^|   APPS    ^|           ^|   STORE   ^|
+echo        ^|   [#]     ^|           ^|    ($)    ^|
+echo        '-----------'           '-----------'
+echo             (1)                     (2)
 echo.
-echo   _________________________________________________________
+echo        .-----------.           .-----------.
+echo        ^|   INFO    ^|           ^|  LOGOUT   ^|
+echo        ^|   (i)     ^|           ^|   ^<--     ^|
+echo        '-----------'           '-----------'
+echo             (3)                     (4)
+echo.
+echo  =============================================================
 echo.
 
-:: FIX: Safer input handling
 set "os_choice="
-set /p "os_choice=Command > "
+set /p "os_choice=Selection > "
 
 if "%os_choice%"=="1" goto apps
 if "%os_choice%"=="2" goto launch_store
@@ -36,13 +44,19 @@ goto desktop
 :apps
 cls
 echo.
-echo  [ APP DRAWER ]
-echo  1. AutoClicker
-echo  2. Matrix
-echo  3. Back
+echo  =============================================================
+echo  ^|  APP DRAWER                                             ^|
+echo  =============================================================
+echo.
+echo    [1] AutoClicker v1.0
+echo    [2] Matrix Code Rain
+echo.
+echo    [3] ^<-- Back to Desktop
+echo.
+echo  =============================================================
 echo.
 set "app="
-set /p "app=Select > "
+set /p "app=Open App > "
 
 if "%app%"=="3" goto desktop
 if "%app%"=="1" goto run_auto
@@ -64,16 +78,24 @@ goto desktop
 :info
 cls
 echo.
-echo  [ SYSTEM INFO ]
-echo  OS: SillyOS v1.9 (Fixed Art)
-echo  Status: Operational
+echo  =============================================================
+echo  ^|  SYSTEM INFORMATION                                     ^|
+echo  =============================================================
 echo.
+echo    OS Version:   SillyOS v2.0 Pro
+echo    User:         Admin
+echo    Status:       Online
+echo    Resolution:   Text-Based (Batch)
+echo.
+echo  =============================================================
 pause
 goto desktop
 
 :logout
 cls
+color 0c
 echo.
-echo  Logging out...
-timeout /t 1 >nul
+echo  [!] SYSTEM SHUTDOWN
+echo      Logging out...
+timeout /t 2 >nul
 exit /b
