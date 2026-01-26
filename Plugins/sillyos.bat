@@ -4,20 +4,38 @@ cd /d "%~dp0"
 title SillyOS Desktop
 setlocal enabledelayedexpansion
 
-:: --- PRE-BOOT CHECKS ---
+:: --- 1. BOOT SCREEN ANIMATION ---
+cls
+color 0B
+echo.
+echo   [ SILLY OS KERNEL ]
+echo.
+echo   Loading Drivers . . .
+timeout /t 1 >nul
+echo   Mounting File System . . .
 if not exist "Files" mkdir "Files" 2>nul
+timeout /t 1 >nul
+echo   Starting User Interface . . .
+timeout /t 1 >nul
+cls
 
-:: FIX: Safely load color. If missing, use default without showing error text.
+:: --- 2. SAFE COLOR LOADER ---
+:: This sets a default first, so we don't error out if the file is missing
+set "current_color=0B"
+
+:: We check if the file exists. If yes, we read it. If no, we skip it.
 if exist "Files\os_color.dat" (
-    <"Files\os_color.dat" set /p "current_color="
-) 2>nul
-if defined current_color (color !current_color!) else (color 0B)
+    set /p current_color=<"Files\os_color.dat"
+)
+
+:: Apply the color (Default is 0B if no file exists)
+color !current_color!
 
 :desktop
 cls
 echo.
 echo  =============================================================
-echo  ^|  SILLY OS v2.5 [ULTIMATE]                User: Admin    ^|
+echo  ^|  SILLY OS v2.6 [ULTIMATE]                User: Admin    ^|
 echo  =============================================================
 echo.
 echo        .-----------.            .-----------.
@@ -52,6 +70,7 @@ cls
 echo  =============================================================
 echo  ^|  DYNAMIC PROGRAM LIST                                  ^|
 echo  =============================================================
+:: This lists all .bat files in the current folder
 dir /b *.bat
 echo.
 set /p "app=Open Program > "
@@ -95,8 +114,9 @@ echo  [!] SYSTEM SHUTDOWN
 echo    Returning to SillyFix...
 timeout /t 2 >nul
 
-
+:: --- 3. THE LOGOUT FIX ---
+:: Since SillyFix 'called' this script, we just need to reset the folder and exit.
 cd /d "%~dp0..\.."
 
-
+:: Exit /b tells the script "I am done, go back to the previous window"
 exit /b
