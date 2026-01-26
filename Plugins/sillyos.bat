@@ -1,10 +1,12 @@
 @echo off
-:: Force script to run in its own directory
+:: --- 1. RESIZE WINDOW & FIX PATHS ---
+:: This forces the window to be 80 columns wide, 30 lines tall
+mode con: cols=80 lines=30
 cd /d "%~dp0"
 title SillyOS Desktop
 setlocal enabledelayedexpansion
 
-:: --- 1. BOOT SCREEN ANIMATION ---
+:: --- 2. BOOT ANIMATION ---
 cls
 color 0B
 echo.
@@ -19,23 +21,19 @@ echo   Starting User Interface . . .
 timeout /t 1 >nul
 cls
 
-:: --- 2. SAFE COLOR LOADER ---
-:: This sets a default first, so we don't error out if the file is missing
+:: --- 3. SILENT COLOR LOADER (No Error Text Fix) ---
 set "current_color=0B"
-
-:: We check if the file exists. If yes, we read it. If no, we skip it.
+:: This loop reads the file silently. If it fails, it prints NOTHING.
 if exist "Files\os_color.dat" (
-    set /p current_color=<"Files\os_color.dat"
+    for /f "usebackq delims=" %%a in ("Files\os_color.dat") do set "current_color=%%a"
 )
-
-:: Apply the color (Default is 0B if no file exists)
 color !current_color!
 
 :desktop
 cls
 echo.
 echo  =============================================================
-echo  ^|  SILLY OS v2.6 [ULTIMATE]                User: Admin    ^|
+echo  ^|  SILLY OS v3.0 [ULTIMATE]                User: Admin    ^|
 echo  =============================================================
 echo.
 echo        .-----------.            .-----------.
@@ -67,18 +65,48 @@ goto desktop
 
 :apps
 cls
-echo  =============================================================
-echo  ^|  DYNAMIC PROGRAM LIST                                  ^|
-echo  =============================================================
-:: This lists all .bat files in the current folder
-dir /b *.bat
 echo.
+echo  =============================================================
+echo  ^|  INSTALLED PROGRAMS                                    ^|
+echo  =============================================================
+echo.
+echo    [1] AutoClicker       [2] SillySniffer    [3] SillySpam
+echo    [4] SillyWeb          [5] SillySpecs      [6] SillyCheck
+echo    [7] SillyClean        [8] SillyNuke       [9] SillyMusic
+echo    [10] SillyChat        [11] SillyWatch     [12] SillyVault
+echo    [13] Matrix Rain      [14] BACK
+echo.
+echo  =============================================================
+echo.
+set "app="
 set /p "app=Open Program > "
-if /i "%app%"=="back" goto desktop
-if exist ".\%app%" (
-    start "" ".\%app%"
+
+if "%app%"=="14" goto desktop
+
+:: --- APP LAUNCHER (Paths fixed to look in parent folder) ---
+:: We use "..\" because these apps are in the folder ABOVE 'plugins'
+
+if "%app%"=="1" start "" "..\auto.EXE" & goto apps
+if "%app%"=="2" start "" "..\wifi.bat" & goto apps
+if "%app%"=="3" start "" "..\spam.bat" & goto apps
+if "%app%"=="4" start "" "..\web.bat" & goto apps
+if "%app%"=="5" start "" "..\specs.bat" & goto apps
+if "%app%"=="6" start "" "..\check.bat" & goto apps
+if "%app%"=="7" start "" "..\clean.bat" & goto apps
+if "%app%"=="8" start "" "..\nuke.bat" & goto apps
+if "%app%"=="9" start "" "..\music.bat" & goto apps
+if "%app%"=="10" start "" "..\chat.bat" & goto apps
+if "%app%"=="11" start "" "..\watch.bat" & goto apps
+if "%app%"=="12" start "" "..\locker.bat" & goto apps
+:: Matrix is likely in the plugins folder, so we check there
+if "%app%"=="13" (
+    if exist "matrix.bat" start "" "matrix.bat"
+    if exist "..\matrix.bat" start "" "..\matrix.bat"
     goto apps
 )
+
+echo [!] App not found.
+timeout /t 1 >nul
 goto apps
 
 :launch_store
@@ -114,9 +142,8 @@ echo  [!] SYSTEM SHUTDOWN
 echo    Returning to SillyFix...
 timeout /t 2 >nul
 
-:: --- 3. THE LOGOUT FIX ---
-:: Since SillyFix 'called' this script, we just need to reset the folder and exit.
+:: Move back to the main folder
 cd /d "%~dp0..\.."
 
-:: Exit /b tells the script "I am done, go back to the previous window"
+:: Exit this script so SillyFix resumes
 exit /b
