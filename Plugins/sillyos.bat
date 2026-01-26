@@ -3,24 +3,39 @@ cd /d "%~dp0"
 title SillyOS Desktop
 setlocal enabledelayedexpansion
 
-:: --- LOGGING FUNCTION ---
+:: --- LOGIN SYSTEM ---
+:login
+cls
+color 0B
+echo.
+echo  =============================================================
+echo  ^|                   SILLY OS SECURE LOGIN                 ^|
+echo  =============================================================
+echo.
+set /p "pass=ENTER SYSTEM PASSWORD: "
+:: You can change 'silly123' to whatever you want your password to be
+if not "%pass%"=="silly123" (
+    echo [!] ACCESS DENIED.
+    timeout /t 2 >nul
+    goto login
+)
+
+:: --- LOGGING & CONFIG ---
 set "logfile=Files\system.log"
 if not exist "Files" mkdir "Files" 2>nul
-echo [%DATE% %TIME%] SillyOS Booted >> "%logfile%"
+echo [%DATE% %TIME%] User Admin Logged In >> "%logfile%"
 
-:: --- LOAD SAVED COLOR ---
+:: THE FIX: Use 'if exist' and '2>nul' to hide the error message from your screenshot
 if exist "Files\os_color.dat" (
-    if exist "Files\os_color.dat" (     set /p current_color=<"Files\os_color.dat" ) 2>nul
+    set /p current_color=<"Files\os_color.dat"
     color !current_color!
-) else (
-    color 0B
-)
+) 2>nul
 
 :desktop
 cls
 echo.
 echo  =============================================================
-echo  ^|  SILLY OS v2.2 [ULTIMATE]                User: Admin    ^|
+echo  ^|  SILLY OS v2.3 [ULTIMATE]                User: Admin    ^|
 echo  =============================================================
 echo.
 echo        .-----------.            .-----------.
@@ -50,33 +65,6 @@ if "%os_choice%"=="s" goto settings
 if "%os_choice%"=="4" goto logout
 goto desktop
 
-:settings
-cls
-echo.
-echo  =============================================================
-echo  ^|  PERSONALIZATION SETTINGS                              ^|
-echo  =============================================================
-echo.
-echo    [1] Matrix Green    [2] Deep Blue     [3] Blood Red
-echo    [4] Classic Cyan    [5] Purple Rain   [6] Gold Edition
-echo    [7] VIEW SYSTEM LOG [8] BACK TO DESKTOP
-echo.
-set /p "col_choice=Select Option > "
-
-if "%col_choice%"=="1" set "new_col=0A" & set "theme_n=Matrix"
-if "%col_choice%"=="2" set "new_col=09" & set "theme_n=DeepBlue"
-if "%col_choice%"=="3" set "new_col=0C" & set "theme_n=BloodRed"
-if "%col_choice%"=="4" set "new_col=0B" & set "theme_n=Classic"
-if "%col_choice%"=="5" set "new_col=05" & set "theme_n=Purple"
-if "%col_choice%"=="6" set "new_col=0E" & set "theme_n=Gold"
-if "%col_choice%"=="7" start notepad.exe "%logfile%" & goto settings
-if "%col_choice%"=="8" goto desktop
-
-color %new_col%
-echo %new_col% > "Files\os_color.dat"
-echo [%DATE% %TIME%] Theme changed to %theme_n% >> "%logfile%"
-goto settings
-
 :apps
 cls
 echo  =============================================================
@@ -94,29 +82,44 @@ if exist ".\%app%" (
 goto apps
 
 :launch_store
-echo [%DATE% %TIME%] Entered Store >> "%logfile%"
 if exist "store.bat" call "store.bat"
 goto desktop
 
+:settings
+cls
+echo  [ PERSONALIZATION ]
+echo  1. Matrix  2. Blue  3. Red  4. Cyan  5. Purple  6. Gold  7. Log  8. Back
+set /p "col_choice=Option > "
+if "%col_choice%"=="1" set "new_col=0A"
+if "%col_choice%"=="2" set "new_col=09"
+if "%col_choice%"=="3" set "new_col=0C"
+if "%col_choice%"=="4" set "new_col=0B"
+if "%col_choice%"=="5" set "new_col=05"
+if "%col_choice%"=="6" set "new_col=0E"
+if "%col_choice%"=="7" start notepad.exe "%logfile%" & goto settings
+if "%col_choice%"=="8" goto desktop
+color %new_col%
+echo %new_col% > "Files\os_color.dat"
+goto settings
+
 :logout
 cls
-:: Change color to Red for the shutdown effect
-color 0c
+color 0C
 echo.
 echo  [!] SYSTEM SHUTDOWN
 echo    Returning to SillyFix...
 echo [%DATE% %TIME%] User Logged Out >> "%logfile%"
+timeout /t 2 >nul
 
-:: THE FIX: Use /d to ensure the drive changes correctly if needed
+:: THE FIX: This specific line jumps out of 'Files\plugins' to the root where SillyFix.bat lives
 cd /d "%~dp0..\.."
 
-:: Check if the file exists before trying to start it
 if exist "SillyFix.bat" (
-    :: Use 'start' to open the menu in a fresh window, then 'exit' this one
     start SillyFix.bat
     exit
 ) else (
-    echo [!] ERROR: SillyFix.bat not found at %CD%
+    echo [!] ERROR: SillyFix.bat not found.
+    echo Current path: %CD%
     pause
     goto desktop
 )
