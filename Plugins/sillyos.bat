@@ -5,40 +5,19 @@ title SillyOS Desktop
 setlocal enabledelayedexpansion
 
 :: --- PRE-BOOT CHECKS ---
-:: Create Files folder if it's missing to prevent "File Not Found" crashes
 if not exist "Files" mkdir "Files" 2>nul
 
-:: --- LOGIN SYSTEM ---
-:login
-cls
-color 0B
-echo.
-echo  =============================================================
-echo  ^|                   SILLY OS SECURE LOGIN                 ^|
-echo  =============================================================
-echo.
-set /p "pass=ENTER SYSTEM PASSWORD: "
-if not "%pass%"=="silly123" (
-    echo [!] ACCESS DENIED.
-    timeout /t 2 >nul
-    goto login
-)
-
-:: --- LOGGING & CONFIG ---
-set "logfile=Files\system.log"
-echo [%DATE% %TIME%] User Admin Logged In >> "%logfile%"
-
-:: Use 2>nul to ignore errors if the file is empty or missing
+:: FIX: Safely load color. If missing, use default without showing error text.
 if exist "Files\os_color.dat" (
-    set /p current_color=<"Files\os_color.dat"
-    color !current_color!
+    <"Files\os_color.dat" set /p "current_color="
 ) 2>nul
+if defined current_color (color !current_color!) else (color 0B)
 
 :desktop
 cls
 echo.
 echo  =============================================================
-echo  ^|  SILLY OS v2.4 [ULTIMATE]                User: Admin    ^|
+echo  ^|  SILLY OS v2.5 [ULTIMATE]                User: Admin    ^|
 echo  =============================================================
 echo.
 echo        .-----------.            .-----------.
@@ -78,20 +57,24 @@ echo.
 set /p "app=Open Program > "
 if /i "%app%"=="back" goto desktop
 if exist ".\%app%" (
-    echo [%DATE% %TIME%] Launched App: %app% >> "%logfile%"
     start "" ".\%app%"
     goto apps
 )
 goto apps
 
 :launch_store
-if exist "store.bat" call "store.bat"
+if exist "store.bat" (
+    call "store.bat"
+) else (
+    echo [!] store.bat not found.
+    pause
+)
 goto desktop
 
 :settings
 cls
 echo  [ PERSONALIZATION ]
-echo  1. Matrix  2. Blue  3. Red  4. Cyan  5. Purple  6. Gold  7. Log  8. Back
+echo  1. Matrix  2. Blue  3. Red  4. Cyan  5. Purple  6. Gold  7. Back
 set /p "col_choice=Option > "
 if "%col_choice%"=="1" set "new_col=0A"
 if "%col_choice%"=="2" set "new_col=09"
@@ -99,8 +82,7 @@ if "%col_choice%"=="3" set "new_col=0C"
 if "%col_choice%"=="4" set "new_col=0B"
 if "%col_choice%"=="5" set "new_col=05"
 if "%col_choice%"=="6" set "new_col=0E"
-if "%col_choice%"=="7" start notepad.exe "%logfile%" & goto settings
-if "%col_choice%"=="8" goto desktop
+if "%col_choice%"=="7" goto desktop
 color %new_col%
 echo %new_col% > "Files\os_color.dat"
 goto settings
@@ -113,17 +95,8 @@ echo  [!] SYSTEM SHUTDOWN
 echo    Returning to SillyFix...
 timeout /t 2 >nul
 
-:: This looks for SillyFix.bat by climbing up the folders until it finds it
-:find_root
-if exist "SillyFix.bat" (
-    start SillyFix.bat
-    exit
-)
-cd ..
-:: Safety check: if we hit the root of the drive, just stop
-if "%CD:~3%"=="" (
-    echo [!] Fatal Error: Could not find SillyFix.bat
-    pause
-    exit
-)
-goto find_root
+
+cd /d "%~dp0..\.."
+
+
+exit /b
