@@ -4,20 +4,14 @@ color 17
 title SillyOS Desktop
 
 :: --- STEP 1: FIND THE ROOT FOLDER ---
-:: We do this one step at a time to avoid crashes.
+:: We still need this so the Apps (AutoClicker, Store) work correctly.
 
 if exist "SillyFix.bat" goto :found_root
 if exist "..\..\SillyFix.bat" goto :move_up_2
 if exist "..\SillyFix.bat" goto :move_up_1
 
-:: If we can't find it anywhere:
-cls
-echo.
-echo  [!] CRITICAL ERROR
-echo  Cannot find 'SillyFix.bat'.
-echo  Please ensure this file is inside 'Files\Plugins'.
-pause
-exit /b
+:: Fallback: If we can't find it, just proceed and hope for the best.
+goto :found_root
 
 :move_up_2
 cd ..\..
@@ -28,33 +22,11 @@ cd ..
 goto :found_root
 
 :found_root
-:: --- STEP 2: WE ARE NOW SAFELY AT THE ROOT ---
-:: Now we don't need weird paths. Everything is just "Files\..."
+:: --- STEP 2: SKIP LOGIN ---
+:: No saving, no reading. Just set the name in memory.
+set "username=Admin"
 
-if not exist "Files" mkdir "Files"
-
-:: --- STEP 3: LOGIN CHECK ---
-if exist "Files\user.dat" goto :load_user
-goto :create_user
-
-:load_user
-set /p username=<"Files\user.dat"
-goto :desktop
-
-:create_user
-cls
-echo.
-echo  [ WELCOME TO SILLY OS ]
-echo  Please create a user account.
-echo.
-set /p "new_user=Username > "
-if "%new_user%"=="" set "new_user=Admin"
-
-:: Set variable
-set "username=%new_user%"
-
-:: Save file safely
-echo %new_user% > "Files\user.dat"
+:: Go straight to the desktop!
 goto :desktop
 
 :desktop
@@ -64,7 +36,7 @@ title SillyOS Desktop - User: %username%
 
 echo.
 echo   _________________________________________________________
-echo  |  SILLY OS v1.5                        User: %username%  |
+echo  |  SILLY OS v1.6                        User: %username%     |
 echo  |_________________________________________________________|
 echo.
 echo      .---.          .---.          .---.          .---.
@@ -83,6 +55,7 @@ if "%os_choice%"=="4" goto :logout
 goto :desktop
 
 :launch_store
+:: We use call so it returns here when done
 call "Files\Plugins\store.bat"
 goto :desktop
 
@@ -104,7 +77,7 @@ goto :apps
 cls
 echo.
 echo  [ SYSTEM INFO ]
-echo  OS: SillyOS v1.5 (Stable)
+echo  OS: SillyOS v1.6 (No Login)
 echo  Location: %CD%
 echo.
 pause
