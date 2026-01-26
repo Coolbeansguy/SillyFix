@@ -4,10 +4,9 @@ color 17
 title SillyOS Desktop
 
 :: --- PATH CALCULATION (The Bulletproof Fix) ---
-:: We calculate the 'Root' folder relative to this script.
-:: Since this script is in Files\Plugins\, the root is two steps up.
 set "SCRIPT_DIR=%~dp0"
-set "ROOT_DIR=%SCRIPT_DIR%..\..\"
+:: This resolves the "..\..\" into a real folder path
+for %%i in ("%SCRIPT_DIR%..\..") do set "ROOT_DIR=%%~f i\"
 set "USER_FILE=%ROOT_DIR%Files\user.dat"
 
 :boot
@@ -23,6 +22,7 @@ if exist "%USER_FILE%" (
     set /p username=<"%USER_FILE%"
     goto desktop
 )
+if not exist "%ROOT_DIR%Files" mkdir "%ROOT_DIR%Files"
 
 :setup
 cls
