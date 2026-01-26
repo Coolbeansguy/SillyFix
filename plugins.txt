@@ -3,4 +3,4 @@
 3|SillyToDo|todo.bat|swapNspit|Task Manager|https://raw.githubusercontent.com/Coolbeansguy/SillyFix/main/Plugins/todo.bat|APP
 4|SillyCipher|cipher.bat|swapNspit|Secret Message Tool|https://raw.githubusercontent.com/Coolbeansguy/SillyFix/main/Plugins/cipher.bat|APP
 5|SillyMatrix|matrix.bat|swapNspit|Falling Code Screen|https://raw.githubusercontent.com/Coolbeansguy/SillyFix/main/Plugins/matrix.bat|APP
-6|SillyOS|sillyos.bat|Coolbeansguy|The OS v2.1|https://raw.githubusercontent.com/Coolbeansguy/SillyFix/main/Plugins/sillyos.bat|THEME
+
