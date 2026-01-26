@@ -10,7 +10,7 @@ echo [%DATE% %TIME%] SillyOS Booted >> "%logfile%"
 
 :: --- LOAD SAVED COLOR ---
 if exist "Files\os_color.dat" (
-    set /p current_color=<"Files\os_color.dat"
+    if exist "Files\os_color.dat" (     set /p current_color=<"Files\os_color.dat" ) 2>nul
     color !current_color!
 ) else (
     color 0B
@@ -100,16 +100,23 @@ goto desktop
 
 :logout
 cls
+:: Change color to Red for the shutdown effect
 color 0c
 echo.
 echo  [!] SYSTEM SHUTDOWN
 echo    Returning to SillyFix...
 echo [%DATE% %TIME%] User Logged Out >> "%logfile%"
-timeout /t 2 >nul
-:: --- THE CHANGE BACK FIX ---
-:: This moves back two folders and runs the main SillyFix.bat
-cd ..\..
+
+:: THE FIX: Use /d to ensure the drive changes correctly if needed
+cd /d "%~dp0..\.."
+
+:: Check if the file exists before trying to start it
 if exist "SillyFix.bat" (
-    start "" "SillyFix.bat"
+    :: Use 'start' to open the menu in a fresh window, then 'exit' this one
+    start SillyFix.bat
+    exit
+) else (
+    echo [!] ERROR: SillyFix.bat not found at %CD%
+    pause
+    goto desktop
 )
-exit
