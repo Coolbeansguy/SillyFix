@@ -3,27 +3,49 @@ setlocal enabledelayedexpansion
 color 17
 title SillyOS Desktop
 
-:: --- PATH CALCULATION ---
-:: Resolves the path to the folder two levels up from this script
-set "SCRIPT_DIR=%~dp0"
-for %%i in ("%SCRIPT_DIR%..\..") do set "ROOT_DIR=%%~fi\"
-set "USER_FILE=%ROOT_DIR%Files\user.dat"
+:: --- SMART PATH FINDER ---
+:: 1. Check if we are already in the Main Folder (Launcher Mode)
+if exist "SillyFix.bat" (
+    set "USER_PATH=Files\user.dat"
+    set "ROOT_PATH=."
+    goto check_done
+)
 
-:: --- SAFETY CHECK ---
-:: Create the Files folder if it doesn't exist so the script doesn't crash
-if not exist "%ROOT_DIR%Files" mkdir "%ROOT_DIR%Files"
+:: 2. Check if we are in the Plugins Folder (Direct Mode)
+if exist "..\..\SillyFix.bat" (
+    set "USER_PATH=..\..\Files\user.dat"
+    set "ROOT_PATH=..\.."
+    goto check_done
+)
 
-:boot
+:: 3. If neither, we are lost.
+cls
+color 4f
+echo.
+echo  [!] ERROR: PATH NOT FOUND
+echo  -------------------------
+echo  SillyOS doesn't know where it is.
+echo  Current Dir: %CD%
+echo.
+echo  Please make sure this file is in Files\Plugins\
+pause
+exit /b
+
+:check_done
+:: --- BOOT SEQUENCE ---
 cls
 echo.
 echo  [ SILLY BIOS ]
-echo  Loading Kernel... OK
-echo  Mounting User Data... OK
+echo  ---------------------------
+echo  [OK] Root Detected: %ROOT_PATH%
+echo  [OK] User File: %USER_PATH%
+echo.
+echo  Loading Kernel...
 timeout /t 1 >nul
 
 :: --- LOGIN LOGIC ---
-if exist "%USER_FILE%" (
-    set /p username=<"%USER_FILE%"
+if exist "%USER_PATH%" (
+    set /p username=<"%USER_PATH%"
     goto desktop
 )
 
@@ -38,8 +60,10 @@ set /p "new_user=Username > "
 if "%new_user%"=="" set "new_user=Admin"
 set "username=%new_user%"
 
-:: Save the username
-(echo %new_user%)>"%USER_FILE%"
+:: --- SAFE SAVE ---
+:: We use the variable we found earlier
+(echo %new_user%) > "%USER_PATH%"
+
 goto desktop
 
 :desktop
@@ -49,27 +73,20 @@ title SillyOS Desktop - User: %username%
 
 echo.
 echo   _________________________________________________________
-echo  ^|  SILLY OS v1.3                User: %username%  ^|
-echo  ^|_________________________________________________________^|
+echo  |  SILLY OS v1.4                        User: %username%  |
+echo  |_________________________________________________________|
 echo.
-echo       .---.          .---.          .---.          .---.
-echo      ^| [_] ^|        ^|  $  ^|        ^|  ?  ^|        ^|  X  ^|
-echo      '-----'        '-----'        '-----'        '-----'
-echo     [1] Apps        [2] Store      [3] Info       [4] Log Out
+echo      .---.          .---.          .---.          .---.
+echo     | [_] |        |  $  |        |  ?  |        |  X  |
+echo     '-----'        '-----'        '-----'        '-----'
+echo    [1] Apps       [2] Store      [3] Info       [4] Log Out
 echo.
 echo   _________________________________________________________
 echo.
 set /p "os_choice=Command > "
 
 if "%os_choice%"=="1" goto apps
-if "%os_choice%"=="2" (
-    if exist "%ROOT_DIR%Files\Plugins\store.bat" (
-        call "%ROOT_DIR%Files\Plugins\store.bat"
-    ) else (
-        echo Store not found! & pause
-    )
-    goto desktop
-)
+if "%os_choice%"=="2" call "%ROOT_PATH%\Files\Plugins\store.bat" & goto desktop
 if "%os_choice%"=="3" goto info
 if "%os_choice%"=="4" goto logout
 goto desktop
@@ -84,16 +101,18 @@ echo  3. Back
 echo.
 set /p "app=Select > "
 if "%app%"=="3" goto desktop
-if "%app%"=="1" start "" "%ROOT_DIR%Files\auto.EXE" & goto apps
-if "%app%"=="2" call "%ROOT_DIR%Files\Plugins\matrix.bat" & goto apps
+:: Use ROOT_PATH to find tools safely
+if "%app%"=="1" start "" "%ROOT_PATH%\Files\auto.EXE" & goto apps
+if "%app%"=="2" call "%ROOT_PATH%\Files\Plugins\matrix.bat" & goto apps
 goto apps
 
 :info
 cls
 echo.
 echo  [ SYSTEM INFO ]
-echo  OS: SillyOS v1.3
-echo  Root: %ROOT_DIR%
+echo  OS: SillyOS v1.4
+echo  User Path: %USER_PATH%
+echo  Root Path: %ROOT_PATH%
 echo.
 pause
 goto desktop
