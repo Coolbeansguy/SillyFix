@@ -43,8 +43,14 @@ echo  [ WELCOME TO SILLY OS ]
 echo  Please create a user account.
 echo.
 set /p "new_user=Username > "
-(echo %new_user%)>"Files\user.dat"
+
+:: Set the variable in memory first (So the OS works no matter what)
 set "username=%new_user%"
+
+:: Try to save to file safely.
+cmd /c "(echo %new_user%)>Files\user.dat" >nul 2>&1
+
+:: If the file wasn't created, we just move on.
 goto desktop
 
 :desktop
