@@ -1,6 +1,6 @@
 @echo off
-:: --- 1. RESIZE WINDOW & FIX PATHS ---
-:: This forces the window to be 80 columns wide, 30 lines tall
+:: --- 1. RESIZE WINDOW ---
+:: Forces the window to be 80 columns wide, 30 lines tall so it looks correct
 mode con: cols=80 lines=30
 cd /d "%~dp0"
 title SillyOS Desktop
@@ -21,9 +21,9 @@ echo   Starting User Interface . . .
 timeout /t 1 >nul
 cls
 
-:: --- 3. SILENT COLOR LOADER (No Error Text Fix) ---
+:: --- 3. THE "NO ERROR TEXT" FIX ---
 set "current_color=0B"
-:: This loop reads the file silently. If it fails, it prints NOTHING.
+:: This loop checks if the file exists first. If not, it does nothing. No error text possible.
 if exist "Files\os_color.dat" (
     for /f "usebackq delims=" %%a in ("Files\os_color.dat") do set "current_color=%%a"
 )
@@ -33,7 +33,7 @@ color !current_color!
 cls
 echo.
 echo  =============================================================
-echo  ^|  SILLY OS v3.0 [ULTIMATE]                User: Admin    ^|
+echo  ^|  SILLY OS v3.1 [ULTIMATE]                User: Admin    ^|
 echo  =============================================================
 echo.
 echo        .-----------.            .-----------.
@@ -83,8 +83,8 @@ set /p "app=Open Program > "
 
 if "%app%"=="14" goto desktop
 
-:: --- APP LAUNCHER (Paths fixed to look in parent folder) ---
-:: We use "..\" because these apps are in the folder ABOVE 'plugins'
+:: --- APP LAUNCHER (Fixed Paths) ---
+:: We use "..\" to look in the parent folder where your apps actually are
 
 if "%app%"=="1" start "" "..\auto.EXE" & goto apps
 if "%app%"=="2" start "" "..\wifi.bat" & goto apps
@@ -98,7 +98,6 @@ if "%app%"=="9" start "" "..\music.bat" & goto apps
 if "%app%"=="10" start "" "..\chat.bat" & goto apps
 if "%app%"=="11" start "" "..\watch.bat" & goto apps
 if "%app%"=="12" start "" "..\locker.bat" & goto apps
-:: Matrix is likely in the plugins folder, so we check there
 if "%app%"=="13" (
     if exist "matrix.bat" start "" "matrix.bat"
     if exist "..\matrix.bat" start "" "..\matrix.bat"
@@ -142,8 +141,8 @@ echo  [!] SYSTEM SHUTDOWN
 echo    Returning to SillyFix...
 timeout /t 2 >nul
 
-:: Move back to the main folder
+:: Move back to main folder
 cd /d "%~dp0..\.."
 
-:: Exit this script so SillyFix resumes
+:: Simply exit. Since SillyFix called us, we return to it automatically.
 exit /b
