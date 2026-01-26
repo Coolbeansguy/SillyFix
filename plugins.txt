@@ -1,6 +1,6 @@
-1|SillySleep|sleep.bat|swapNspit|Auto-Shutdown Timer|https://raw.githubusercontent.com/Coolbeansguy/SillyFix/main/Plugins/sleep.bat
-2|SillyConvert|convert.bat|swapNspit|Unit Converter Tool|https://raw.githubusercontent.com/Coolbeansguy/SillyFix/main/Plugins/convert.bat
-3|SillyToDo|todo.bat|swapNspit|Task Manager|https://raw.githubusercontent.com/Coolbeansguy/SillyFix/main/Plugins/todo.bat
-4|SillyCipher|cipher.bat|swapNspit|Secret Message Tool|https://raw.githubusercontent.com/Coolbeansguy/SillyFix/main/Plugins/cipher.bat
-5|SillyMatrix|matrix.bat|swapNspit|Falling Code Screen|https://raw.githubusercontent.com/Coolbeansguy/SillyFix/main/Plugins/matrix.bat
-6|SillyOS Theme|sillyos.bat|swapNspit|Changes UI to an Operating System|https://raw.githubusercontent.com/Coolbeansguy/SillyFix/main/Plugins/sillyos.bat
+1|SillySleep|sleep.bat|swapNspit|Auto-Shutdown Timer|https://raw.githubusercontent.com/Coolbeansguy/SillyFix/main/Plugins/sleep.bat|APP
+2|SillyConvert|convert.bat|swapNspit|Unit Converter Tool|https://raw.githubusercontent.com/Coolbeansguy/SillyFix/main/Plugins/convert.bat|APP
+3|SillyToDo|todo.bat|swapNspit|Task Manager|https://raw.githubusercontent.com/Coolbeansguy/SillyFix/main/Plugins/todo.bat|APP
+4|SillyCipher|cipher.bat|swapNspit|Secret Message Tool|https://raw.githubusercontent.com/Coolbeansguy/SillyFix/main/Plugins/cipher.bat|APP
+5|SillyMatrix|matrix.bat|swapNspit|Falling Code Screen|https://raw.githubusercontent.com/Coolbeansguy/SillyFix/main/Plugins/matrix.bat|APP
+6|SillyOS Theme|sillyos.bat|swapNspit|Changes UI to an Operating System|https://raw.githubusercontent.com/Coolbeansguy/SillyFix/main/Plugins/sillyos.bat|THEME
