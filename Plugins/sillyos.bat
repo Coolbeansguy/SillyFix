@@ -1,97 +1,117 @@
 @echo off
 setlocal enabledelayedexpansion
 color 17
-title SillyOS Debug Mode
+title SillyOS Desktop
 
-echo [DEBUG] Starting Path Detection...
+:: --- STEP 1: FIND THE ROOT FOLDER ---
+:: We do this one step at a time to avoid crashes.
 
-:: --- 1. DETERMINE ROOT ---
-if exist "SillyFix.bat" (
-    set "ROOT=."
-    echo [DEBUG] Mode: Launcher (Root is current dir)
-) else (
-    if exist "..\..\SillyFix.bat" (
-        set "ROOT=..\.."
-        echo [DEBUG] Mode: Plugin (Root is 2 levels up)
-    ) else (
-        echo [!] FATAL ERROR: Cannot find SillyFix.bat!
-        echo     Current Dir: %CD%
-        pause
-        exit /b
-    )
-)
+if exist "SillyFix.bat" goto :found_root
+if exist "..\..\SillyFix.bat" goto :move_up_2
+if exist "..\SillyFix.bat" goto :move_up_1
 
-:: --- 2. DEFINE PATHS ---
-set "USER_FILE=%ROOT%\Files\user.dat"
-set "FILES_DIR=%ROOT%\Files"
-
-echo [DEBUG] Root Path: %ROOT%
-echo [DEBUG] User File: %USER_FILE%
+:: If we can't find it anywhere:
+cls
 echo.
-echo Press any key to check for the Files folder...
-pause >nul
+echo  [!] CRITICAL ERROR
+echo  Cannot find 'SillyFix.bat'.
+echo  Please ensure this file is inside 'Files\Plugins'.
+pause
+exit /b
 
-:: --- 3. CHECK FILES FOLDER ---
-if not exist "%FILES_DIR%" (
-    echo [DEBUG] Files folder missing. Creating it...
-    mkdir "%FILES_DIR%"
-    if exist "%FILES_DIR%" (
-        echo [OK] Folder created.
-    ) else (
-        echo [!] ERROR: Could not create folder at: %FILES_DIR%
-        echo     Check permissions!
-        pause
-        exit /b
-    )
-) else (
-    echo [OK] Files folder found.
-)
+:move_up_2
+cd ..\..
+goto :found_root
 
-echo.
-echo Press any key to try Login...
-pause >nul
+:move_up_1
+cd ..
+goto :found_root
 
-:: --- 4. LOGIN LOGIC ---
-if exist "%USER_FILE%" (
-    echo [DEBUG] Found user.dat. Reading...
-    set /p username=<"%USER_FILE%"
-    echo [DEBUG] Read Username: !username!
-    goto desktop
-)
+:found_root
+:: --- STEP 2: WE ARE NOW SAFELY AT THE ROOT ---
+:: Now we don't need weird paths. Everything is just "Files\..."
 
-echo [DEBUG] No user found. Going to Setup.
-echo Press any key to start Setup...
-pause >nul
+if not exist "Files" mkdir "Files"
 
-:setup
+:: --- STEP 3: LOGIN CHECK ---
+if exist "Files\user.dat" goto :load_user
+goto :create_user
+
+:load_user
+set /p username=<"Files\user.dat"
+goto :desktop
+
+:create_user
 cls
 echo.
 echo  [ WELCOME TO SILLY OS ]
 echo  Please create a user account.
 echo.
 set /p "new_user=Username > "
-
 if "%new_user%"=="" set "new_user=Admin"
+
+:: Set variable
 set "username=%new_user%"
 
-echo.
-echo [DEBUG] Attempting to save to: %USER_FILE%
-echo Press any key to write file...
-pause >nul
-
-:: --- 5. THE SAVE COMMAND ---
-(echo %new_user%) > "%USER_FILE%"
-
-echo [DEBUG] File saved successfully!
-pause
-goto desktop
+:: Save file safely
+echo %new_user% > "Files\user.dat"
+goto :desktop
 
 :desktop
 cls
+color 17
+title SillyOS Desktop - User: %username%
+
 echo.
-echo  [ SUCCESS! ]
-echo  You made it to the desktop.
-echo  User: %username%
+echo   _________________________________________________________
+echo  |  SILLY OS v1.5                        User: %username%  |
+echo  |_________________________________________________________|
+echo.
+echo      .---.          .---.          .---.          .---.
+echo     | [_] |        |  $  |        |  ?  |        |  X  |
+echo     '-----'        '-----'        '-----'        '-----'
+echo    [1] Apps       [2] Store      [3] Info       [4] Log Out
+echo.
+echo   _________________________________________________________
+echo.
+set /p "os_choice=Command > "
+
+if "%os_choice%"=="1" goto :apps
+if "%os_choice%"=="2" goto :launch_store
+if "%os_choice%"=="3" goto :info
+if "%os_choice%"=="4" goto :logout
+goto :desktop
+
+:launch_store
+call "Files\Plugins\store.bat"
+goto :desktop
+
+:apps
+cls
+echo.
+echo  [ APP DRAWER ]
+echo  1. AutoClicker
+echo  2. Matrix
+echo  3. Back
+echo.
+set /p "app=Select > "
+if "%app%"=="3" goto :desktop
+if "%app%"=="1" start "" "Files\auto.EXE" & goto :apps
+if "%app%"=="2" call "Files\Plugins\matrix.bat" & goto :apps
+goto :apps
+
+:info
+cls
+echo.
+echo  [ SYSTEM INFO ]
+echo  OS: SillyOS v1.5 (Stable)
+echo  Location: %CD%
 echo.
 pause
+goto :desktop
+
+:logout
+cls
+echo.
+echo  Logging out...
 exit /b
