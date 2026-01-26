@@ -14,12 +14,12 @@ cls
 cls
 echo.
 echo  =============================================================
-echo  ^|  SILLY OS v2.0 [PRO]                      User: Admin    ^|
+echo  ^|  SILLY OS v2.1 [ULTIMATE]                 User: Admin    ^|
 echo  =============================================================
 echo.
 echo        .-----------.           .-----------.
-echo        ^|   APPS    ^|           ^|   STORE   ^|
-echo        ^|   [#]     ^|           ^|    ($)    ^|
+echo        ^|   APPS    ^|           ^| SILLYFIX  ^|
+echo        ^|   [#]     ^|           ^|   STORE   ^|
 echo        '-----------'           '-----------'
 echo             (1)                     (2)
 echo.
@@ -45,30 +45,42 @@ goto desktop
 cls
 echo.
 echo  =============================================================
-echo  ^|  APP DRAWER                                             ^|
+echo  ^|  ALL PROGRAMS                                           ^|
 echo  =============================================================
 echo.
-echo    [1] AutoClicker v1.0
-echo    [2] Matrix Code Rain
-echo.
-echo    [3] ^<-- Back to Desktop
+echo    [1] AutoClicker       [2] SillySniffer    [3] SillySpam
+echo    [4] SillyWeb          [5] SillySpecs      [6] SillyCheck
+echo    [7] SillyClean        [8] SillyNuke       [9] SillyMusic
+echo    [10] SillyChat        [11] SillyWatch     [12] SillyVault
+echo    [13] Matrix Rain      [14] Back
 echo.
 echo  =============================================================
 echo.
 set "app="
-set /p "app=Open App > "
+set /p "app=Open Program > "
 
-if "%app%"=="3" goto desktop
-if "%app%"=="1" goto run_auto
-if "%app%"=="2" goto run_matrix
-goto apps
+if "%app%"=="14" goto desktop
 
-:run_auto
-start "" "Files\auto.EXE"
-goto apps
+:: --- APP LAUNCHER ---
+:: These assume the files exist in the main Files folder
 
-:run_matrix
-call "Files\Plugins\matrix.bat"
+if "%app%"=="1" start "" "Files\auto.EXE" & goto apps
+if "%app%"=="2" start "" "Files\wifi.bat" & goto apps
+if "%app%"=="3" start "" "Files\spam.bat" & goto apps
+if "%app%"=="4" start "" "Files\web.bat" & goto apps
+if "%app%"=="5" start "" "Files\specs.bat" & goto apps
+if "%app%"=="6" start "" "Files\check.bat" & goto apps
+if "%app%"=="7" start "" "Files\clean.bat" & goto apps
+if "%app%"=="8" start "" "Files\nuke.bat" & goto apps
+if "%app%"=="9" start "" "Files\music.bat" & goto apps
+if "%app%"=="10" start "" "Files\chat.bat" & goto apps
+if "%app%"=="11" start "" "Files\watch.bat" & goto apps
+if "%app%"=="12" start "" "Files\locker.bat" & goto apps
+if "%app%"=="13" call "Files\Plugins\matrix.bat" & goto apps
+
+:: Fallback
+echo [!] App not found.
+timeout /t 1 >nul
 goto apps
 
 :launch_store
@@ -82,10 +94,9 @@ echo  =============================================================
 echo  ^|  SYSTEM INFORMATION                                     ^|
 echo  =============================================================
 echo.
-echo    OS Version:   SillyOS v2.0 Pro
+echo    OS Version:   SillyOS v2.1 Ultimate
 echo    User:         Admin
-echo    Status:       Online
-echo    Resolution:   Text-Based (Batch)
+echo    Installed:    13 Apps
 echo.
 echo  =============================================================
 pause
