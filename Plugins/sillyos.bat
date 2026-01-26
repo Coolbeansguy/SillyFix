@@ -1,14 +1,60 @@
 @echo off
-:: SILLY OS THEME FILE
-cls
+:: FIX: This ensures we are looking at the main folder, not the Plugins folder
+if exist "..\..\SillyFix.bat" pushd "..\.."
+
+setlocal enabledelayedexpansion
 color 17
 title SillyOS Desktop
 
-:desktop
+:init_check
+:: Debug Check: If we still can't find the Files folder, stop and show error
+if not exist "Files" (
+    cls
+    color 4f
+    echo.
+    echo  [!] ERROR: FILE SYSTEM NOT FOUND
+    echo      SillyOS cannot find the 'Files' folder.
+    echo      Current Directory: %cd%
+    echo.
+    pause
+    exit /b
+)
+
+:boot
 cls
 echo.
+echo  [ SILLY BIOS ]
+echo  Loading Kernel... OK
+echo  Mounting User Data... OK
+timeout /t 1 >nul
+
+:: --- LOGIN LOGIC ---
+if exist "Files\user.dat" (
+    set /p username=<"Files\user.dat"
+    goto desktop
+) else (
+    goto setup
+)
+
+:setup
+cls
+echo.
+echo  [ WELCOME TO SILLY OS ]
+echo  Please create a user account.
+echo.
+set /p "new_user=Username > "
+(echo %new_user%)>"Files\user.dat"
+set "username=%new_user%"
+goto desktop
+
+:desktop
+cls
+color 17
+title SillyOS Desktop - User: %username%
+
+echo.
 echo   _________________________________________________________
-echo  |  SILLY OS v1.0                        User: Admin     |
+echo  |  SILLY OS v1.0                        User: %username%  |
 echo  |_________________________________________________________|
 echo.
 echo      .---.          .---.          .---.          .---.
@@ -22,7 +68,7 @@ set /p "os_choice=Command > "
 
 if "%os_choice%"=="1" goto apps
 if "%os_choice%"=="2" call "Files\Plugins\store.bat" & goto desktop
-if "%os_choice%"=="3" echo This is the SillyOS Theme! & pause & goto desktop
+if "%os_choice%"=="3" goto info
 if "%os_choice%"=="4" goto logout
 goto desktop
 
@@ -36,16 +82,25 @@ echo  3. Back
 echo.
 set /p "app=Select > "
 if "%app%"=="3" goto desktop
-:: Add your tool logic here
-echo Tool not linked in this demo.
-pause
+:: Launch Tools (Make sure paths are correct!)
+if "%app%"=="1" start "" "Files\auto.EXE" & goto apps
+if "%app%"=="2" call "Files\Plugins\matrix.bat" & goto apps
 goto apps
+
+:info
+cls
+echo.
+echo  [ SYSTEM INFO ]
+echo  OS: SillyOS v1.1
+echo  Host Path: %cd%
+echo.
+pause
+goto desktop
 
 :logout
 cls
 echo.
-echo  Logging out of SillyOS...
-echo DEFAULT > "Files\config.dat"
-timeout /t 2 >nul
-start "" "SillyFix.bat"
-exit
+echo  Logging out...
+:: If we used pushd earlier, we popd back to normal
+popd
+exit /b
