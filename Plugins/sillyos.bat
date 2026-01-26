@@ -113,15 +113,17 @@ echo  [!] SYSTEM SHUTDOWN
 echo    Returning to SillyFix...
 timeout /t 2 >nul
 
-:: Move out of 'Files\plugins' back to the main folder
-cd /d "%~dp0..\.."
-
-:: Start the main file and IMMEDIATELY exit this one to prevent a crash loop
+:: This looks for SillyFix.bat by climbing up the folders until it finds it
+:find_root
 if exist "SillyFix.bat" (
     start SillyFix.bat
     exit
-) else (
-    echo [!] ERROR: SillyFix.bat not found at: %cd%
-    pause
-    goto login
 )
+cd ..
+:: Safety check: if we hit the root of the drive, just stop
+if "%CD:~3%"=="" (
+    echo [!] Fatal Error: Could not find SillyFix.bat
+    pause
+    exit
+)
+goto find_root
