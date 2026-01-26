@@ -1,53 +1,67 @@
 @echo off
 setlocal enabledelayedexpansion
 color 17
-title SillyOS Desktop
+title SillyOS Debug Mode
 
-:: --- SMART PATH FINDER ---
-:: 1. Check if we are already in the Main Folder (Launcher Mode)
+echo [DEBUG] Starting Path Detection...
+
+:: --- 1. DETERMINE ROOT ---
 if exist "SillyFix.bat" (
-    set "USER_PATH=Files\user.dat"
-    set "ROOT_PATH=."
-    goto check_done
+    set "ROOT=."
+    echo [DEBUG] Mode: Launcher (Root is current dir)
+) else (
+    if exist "..\..\SillyFix.bat" (
+        set "ROOT=..\.."
+        echo [DEBUG] Mode: Plugin (Root is 2 levels up)
+    ) else (
+        echo [!] FATAL ERROR: Cannot find SillyFix.bat!
+        echo     Current Dir: %CD%
+        pause
+        exit /b
+    )
 )
 
-:: 2. Check if we are in the Plugins Folder (Direct Mode)
-if exist "..\..\SillyFix.bat" (
-    set "USER_PATH=..\..\Files\user.dat"
-    set "ROOT_PATH=..\.."
-    goto check_done
+:: --- 2. DEFINE PATHS ---
+set "USER_FILE=%ROOT%\Files\user.dat"
+set "FILES_DIR=%ROOT%\Files"
+
+echo [DEBUG] Root Path: %ROOT%
+echo [DEBUG] User File: %USER_FILE%
+echo.
+echo Press any key to check for the Files folder...
+pause >nul
+
+:: --- 3. CHECK FILES FOLDER ---
+if not exist "%FILES_DIR%" (
+    echo [DEBUG] Files folder missing. Creating it...
+    mkdir "%FILES_DIR%"
+    if exist "%FILES_DIR%" (
+        echo [OK] Folder created.
+    ) else (
+        echo [!] ERROR: Could not create folder at: %FILES_DIR%
+        echo     Check permissions!
+        pause
+        exit /b
+    )
+) else (
+    echo [OK] Files folder found.
 )
 
-:: 3. If neither, we are lost.
-cls
-color 4f
 echo.
-echo  [!] ERROR: PATH NOT FOUND
-echo  -------------------------
-echo  SillyOS doesn't know where it is.
-echo  Current Dir: %CD%
-echo.
-echo  Please make sure this file is in Files\Plugins\
-pause
-exit /b
+echo Press any key to try Login...
+pause >nul
 
-:check_done
-:: --- BOOT SEQUENCE ---
-cls
-echo.
-echo  [ SILLY BIOS ]
-echo  ---------------------------
-echo  [OK] Root Detected: %ROOT_PATH%
-echo  [OK] User File: %USER_PATH%
-echo.
-echo  Loading Kernel...
-timeout /t 1 >nul
-
-:: --- LOGIN LOGIC ---
-if exist "%USER_PATH%" (
-    set /p username=<"%USER_PATH%"
+:: --- 4. LOGIN LOGIC ---
+if exist "%USER_FILE%" (
+    echo [DEBUG] Found user.dat. Reading...
+    set /p username=<"%USER_FILE%"
+    echo [DEBUG] Read Username: !username!
     goto desktop
 )
+
+echo [DEBUG] No user found. Going to Setup.
+echo Press any key to start Setup...
+pause >nul
 
 :setup
 cls
@@ -60,65 +74,24 @@ set /p "new_user=Username > "
 if "%new_user%"=="" set "new_user=Admin"
 set "username=%new_user%"
 
-:: --- SAFE SAVE ---
-:: We use the variable we found earlier
-(echo %new_user%) > "%USER_PATH%"
+echo.
+echo [DEBUG] Attempting to save to: %USER_FILE%
+echo Press any key to write file...
+pause >nul
 
+:: --- 5. THE SAVE COMMAND ---
+(echo %new_user%) > "%USER_FILE%"
+
+echo [DEBUG] File saved successfully!
+pause
 goto desktop
 
 :desktop
 cls
-color 17
-title SillyOS Desktop - User: %username%
-
 echo.
-echo   _________________________________________________________
-echo  |  SILLY OS v1.4                        User: %username%  |
-echo  |_________________________________________________________|
-echo.
-echo      .---.          .---.          .---.          .---.
-echo     | [_] |        |  $  |        |  ?  |        |  X  |
-echo     '-----'        '-----'        '-----'        '-----'
-echo    [1] Apps       [2] Store      [3] Info       [4] Log Out
-echo.
-echo   _________________________________________________________
-echo.
-set /p "os_choice=Command > "
-
-if "%os_choice%"=="1" goto apps
-if "%os_choice%"=="2" call "%ROOT_PATH%\Files\Plugins\store.bat" & goto desktop
-if "%os_choice%"=="3" goto info
-if "%os_choice%"=="4" goto logout
-goto desktop
-
-:apps
-cls
-echo.
-echo  [ APP DRAWER ]
-echo  1. AutoClicker
-echo  2. Matrix
-echo  3. Back
-echo.
-set /p "app=Select > "
-if "%app%"=="3" goto desktop
-:: Use ROOT_PATH to find tools safely
-if "%app%"=="1" start "" "%ROOT_PATH%\Files\auto.EXE" & goto apps
-if "%app%"=="2" call "%ROOT_PATH%\Files\Plugins\matrix.bat" & goto apps
-goto apps
-
-:info
-cls
-echo.
-echo  [ SYSTEM INFO ]
-echo  OS: SillyOS v1.4
-echo  User Path: %USER_PATH%
-echo  Root Path: %ROOT_PATH%
+echo  [ SUCCESS! ]
+echo  You made it to the desktop.
+echo  User: %username%
 echo.
 pause
-goto desktop
-
-:logout
-cls
-echo.
-echo  Logging out...
 exit /b
