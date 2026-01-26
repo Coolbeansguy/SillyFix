@@ -1,5 +1,5 @@
 @echo off
-:: FIX: This ensures we are looking at the main folder, not the Plugins folder
+:: FIX: Ensure we are in the main folder
 if exist "..\..\SillyFix.bat" pushd "..\.."
 
 setlocal enabledelayedexpansion
@@ -7,18 +7,7 @@ color 17
 title SillyOS Desktop
 
 :init_check
-:: Debug Check: If we still can't find the Files folder, stop and show error
-if not exist "Files" (
-    cls
-    color 4f
-    echo.
-    echo  [!] ERROR: FILE SYSTEM NOT FOUND
-    echo      SillyOS cannot find the 'Files' folder.
-    echo      Current Directory: %cd%
-    echo.
-    pause
-    exit /b
-)
+if not exist "Files" mkdir "Files"
 
 :boot
 cls
@@ -32,8 +21,6 @@ timeout /t 1 >nul
 if exist "Files\user.dat" (
     set /p username=<"Files\user.dat"
     goto desktop
-) else (
-    goto setup
 )
 
 :setup
@@ -44,14 +31,21 @@ echo  Please create a user account.
 echo.
 set /p "new_user=Username > "
 
-:: Set the variable in memory first (So the OS works no matter what)
+:: Fallback if empty
+if "%new_user%"=="" set "new_user=Admin"
+
+:: Set variable in memory
 set "username=%new_user%"
 
-:: Try to save to file safely.
-cmd /c "(echo %new_user%)>Files\user.dat" >nul 2>&1
-
-:: If the file wasn't created, we just move on.
+:: SIMPLE SAVE (No crash risk)
+:: We move the save logic to a subroutine to avoid syntax errors
+call :save_user "%new_user%"
 goto desktop
+
+:save_user
+:: This writes the file safely outside of any loops/brackets
+(echo %~1) > "Files\user.dat"
+exit /b
 
 :desktop
 cls
@@ -88,7 +82,6 @@ echo  3. Back
 echo.
 set /p "app=Select > "
 if "%app%"=="3" goto desktop
-:: Launch Tools (Make sure paths are correct!)
 if "%app%"=="1" start "" "Files\auto.EXE" & goto apps
 if "%app%"=="2" call "Files\Plugins\matrix.bat" & goto apps
 goto apps
@@ -97,7 +90,7 @@ goto apps
 cls
 echo.
 echo  [ SYSTEM INFO ]
-echo  OS: SillyOS v1.1
+echo  OS: SillyOS v1.2
 echo  Host Path: %cd%
 echo.
 pause
@@ -107,6 +100,6 @@ goto desktop
 cls
 echo.
 echo  Logging out...
-:: If we used pushd earlier, we popd back to normal
+:: Restore original directory and exit
 popd
 exit /b
